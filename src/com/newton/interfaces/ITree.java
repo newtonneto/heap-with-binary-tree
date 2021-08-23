@@ -7,9 +7,12 @@ public interface ITree {
     void upHeap(Node node);
     Node removeMin();
     void downHeap(Node node);
+    void setTail(Node node);
+    Node getTail();
     Integer height();
+    double doubleHeight();
     Integer size();
     Boolean isEmpty();
     Node min();
-    void print();
+    void print(Node node, Integer spaces);
 }
