@@ -22,10 +22,12 @@ public class Tree implements ITree {
             this.tail.setLeftChild(new Node(element));
             //É necessario definir os pais dos nodes para que os mesmos não caiam na condição exclusiva do root no setTail
             this.tail.getLeftChild().setParent(this.tail);
+            upHeap(this.tail.getLeftChild());
         } else {
             this.tail.setRightChild(new Node(element));
             //É necessario definir os pais dos nodes para que os mesmos não caiam na condição exclusiva do root no setTail
             this.tail.getRightChild().setParent(this.tail);
+            upHeap(this.tail.getRightChild());
             setTail(this.tail);
         }
         this.quantity_nodes++;
@@ -35,10 +37,55 @@ public class Tree implements ITree {
     public void upHeap(Node node) {
         //Verifica se o node é menor que o seu pai
         if (Integer.parseInt(node.getKey().toString()) < Integer.parseInt(node.getParent().getKey().toString())) {
-            //Realiza a substituição das posições
-            Node temporary_storage = node.getParent();
+            Node parent = node.getParent();
+            Node grandparent = parent.getParent();
 
+            //Verifica se um dos elementos a ser mudado de posição é o root
+            if (grandparent == null) {
+                //Armazena os filhos do node
+                Node left_children = node.getLeftChild();
+                Node right_children = node.getRightChild();
 
+                //Realiza o swap entre o node e seu pai, incluindo o irmão do node passa a ser seu filho
+                if (parent.getLeftChild() == node) {
+                    node.setLeftChild(parent);
+                    node.setRightChild(parent.getRightChild());
+                } else if (parent.getRightChild() == node) {
+                    node.setLeftChild(parent.getLeftChild());
+                    node.setRightChild(parent);
+                }
+
+                //O que antes era pai do node agora é seu filho, sendo agora pai dos ex filhos do node
+                node.setParent(null);
+                parent.setParent(node);
+                parent.setLeftChild(left_children);
+                parent.setRightChild(right_children);
+                //Atualiza o root
+                this.root = node;
+            } else {
+                //Realiza a substituição das posições, iniciamente troca o node filho do avó
+                if (grandparent.getLeftChild() == parent) {
+                    grandparent.setLeftChild(node);
+                } else if (grandparent.getRightChild() == parent) {
+                    grandparent.setRightChild(node);
+                }
+
+                node.setParent(grandparent);
+
+                //Realiza a substituição das posições do node pai
+                if (parent.getLeftChild() == node) {
+                    node.setLeftChild(parent);
+                    node.setRightChild(parent.getRightChild());
+                } else if (parent.getRightChild() == node) {
+                    node.setRightChild(parent);
+                    node.setLeftChild(parent.getLeftChild());
+                }
+
+                parent.setLeftChild(null);
+                parent.setRightChild(null);
+
+                upHeap(node);
+            }
         }
     }
 
