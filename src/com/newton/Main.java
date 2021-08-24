@@ -13,6 +13,13 @@ public class Main {
         heap.insert(25);
         heap.insert(30);
         heap.insert(1);
+        heap.insert(41);
+
+        heap.print(heap.min(), 10);
+
+        System.out.println(heap.getTail().toString());
+        heap.removeMin();
+        System.out.println(heap.getTail().toString());
 
         heap.print(heap.min(), 10);
     }

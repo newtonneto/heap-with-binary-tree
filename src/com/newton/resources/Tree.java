@@ -91,16 +91,71 @@ public class Tree implements ITree {
 
     @Override
     public Node removeMin() {
+        if (this.isEmpty()) {
+            //exception
+        }
+        Node old_root = this.root;
+        Integer left_child_value = Integer.parseInt(old_root.getLeftChild().toString());
+        Integer right_child_value = Integer.parseInt(old_root.getRightChild().toString());
+
+        //Verifica se a heap é uma arvore binaria perfeita
+        //Caso seja, a tail tem que ser buscada novamente, pois a referencia da mesma vai estar apontando
+        //para o node na extrema esquerda, onde seria o proximo insert, porem, como isso é um remove, a tail
+        //deve ser o elemento removido (ocupando o lugar do root), e em uma arvore binaria perfeita esse
+        //elemento se encontra na extrema direita. Pro caso da arvore não ser perfeita, pode-se usar a
+        //referencia normal da tail. É possivel verificar se a árvore é perfeita ou não atraves do valor em double
+        //da sua altura, se for um número fracionado a mesma não é perfeita
+        //Esse processo é necessario pois a causa é definida pelo proximo node a receber nodes, e não necessariamente
+        //pelo último node
+        double fractional_part = this.doubleHeight() % 1;
+
+        if (fractional_part == 0.0) {
+            //Como a árvore é perfeita, é necessario buscar a tail real, que ta na extrema direita
+            this.reallocTail(this.root);
+
+            //Remove as referencias do pai da tail real
+            if (this.tail.getParent().getLeftChild() == this.tail) {
+                this.tail.getParent().setLeftChild(null);
+            } else {
+                this.tail.getParent().setRightChild(null);
+            }
+
+            //Passa os filhos do root para a tail
+            this.tail.setLeftChild(this.root.getLeftChild());
+            this.tail.setRightChild(this.root.getRightChild());
+            //Salva a referência da proxima tail, será o pai do tail atual (não é a tail real, apenas a que irá receber novos nodes)
+            Node next_tail = this.tail.getParent();
+            //Remove a referência do pai do tail, assim ele efetivamente se tornara o root
+            this.tail.setParent(null);
+            //Remove as referencias do antigo root
+            this.root.setParent(null);
+            this.root.setLeftChild(null);
+            this.root.setRightChild(null);
+            this.root = this.tail;
+            this.tail = next_tail;
+
+            //Verifica qual dos filhos do root é o menor
+            if (left_child_value > right_child_value) {
+
+            } else {
+
+            }
+        } else {
+            //A tail real é um dos filhos da tail, verificar primeiro se o filho direito não é nulo, ser for a tail real é o filho esquerdo
+
+            //Verifica qual dos filhos do root é o menor
+            if (left_child_value > right_child_value) {
+
+            } else {
+
+            }
+        }
+
         return null;
     }
 
     @Override
     public void downHeap(Node node) {
-
-    }
-
-    @Override
-    public void swapNodes(Node node) {
 
     }
 
@@ -133,13 +188,23 @@ public class Tree implements ITree {
     }
 
     @Override
+    public void reallocTail(Node node) { //Metodo responsavel por redefinir a posição da tail quando necessario
+        this.tail = node;
+
+        //Vai decendo de nível sempre pela direita, até chegar ao elemento mais extremo, na ponta da árvore
+        while (this.tail.getRightChild() != null) {
+            this.tail = this.tail.getRightChild();
+        }
+    }
+
+    @Override
     public Integer height() {
-        return (int)Math.ceil(Math.log(6 + 1) / Math.log(2)) - 1;
+        return (int)Math.ceil(Math.log(this.quantity_nodes + 1) / Math.log(2)) - 1;
     }
 
     @Override
     public double doubleHeight() {
-        return (Math.log(6 + 1) / Math.log(2)) - 1;
+        return (Math.log(this.quantity_nodes + 1) / Math.log(2)) - 1;
     }
 
     @Override
@@ -154,7 +219,7 @@ public class Tree implements ITree {
 
     @Override
     public Node min() {
-        if (isEmpty()) {
+        if (this.isEmpty()) {
             //exception
         }
 
