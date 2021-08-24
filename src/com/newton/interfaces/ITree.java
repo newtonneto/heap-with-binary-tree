@@ -6,7 +6,7 @@ public interface ITree {
     void insert(Object element);
     void upHeap(Node node);
     Node removeMin();
-    void downHeap(Node node);
+    void downHeap(Node node_down, Node node_up);
     void setTail(Node node);
     Node getTail();
     void reallocTail(Node node);

@@ -135,8 +135,15 @@ public class Tree implements ITree {
             this.tail = next_tail;
 
             //Verifica qual dos filhos do root é o menor
-            if (left_child_value > right_child_value) {
+            if (left_child_value < right_child_value) {
+                Integer root_value = Integer.parseInt(this.root.getKey().toString());
 
+                //Agora verifica se o novo root é maior que o seu menor filho
+                if (root_value > left_child_value) {
+                    downHeap(this.root, this.root.getLeftChild());
+                } else if (root_value > right_child_value) { //Caso não seja maior que o menor filho, verifica se não é maior que o outro filho
+                    downHeap(this.root, this.root.getRightChild());
+                }
             } else {
 
             }
@@ -155,7 +162,7 @@ public class Tree implements ITree {
     }
 
     @Override
-    public void downHeap(Node node) {
+    public void downHeap(Node node_down, Node node_up) {
 
     }
 
