@@ -7,6 +7,7 @@ public interface ITree {
     void upHeap(Node node);
     Node removeMin();
     void downHeap(Node node);
+    void swapNodes(Node node);
     void setTail(Node node);
     Node getTail();
     Integer height();

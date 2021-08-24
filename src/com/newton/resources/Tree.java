@@ -33,7 +33,13 @@ public class Tree implements ITree {
 
     @Override
     public void upHeap(Node node) {
+        //Verifica se o node é menor que o seu pai
+        if (Integer.parseInt(node.getKey().toString()) < Integer.parseInt(node.getParent().getKey().toString())) {
+            //Realiza a substituição das posições
+            Node temporary_storage = node.getParent();
 
+
+        }
     }
 
     @Override
@@ -43,6 +49,11 @@ public class Tree implements ITree {
 
     @Override
     public void downHeap(Node node) {
+
+    }
+
+    @Override
+    public void swapNodes(Node node) {
 
     }
 
