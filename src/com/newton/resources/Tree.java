@@ -18,7 +18,7 @@ public class Tree implements ITree {
         if (this.root == null) {
             this.root = new Node(element);
             this.tail = this.root;
-        } else if (this.tail.getLeftChild() == null) { //Verifica se a esquerda da causa está vazia
+        } else if (this.tail.getLeftChild() == null) { //Verifica se a esquerda da tail está vazia
             this.tail.setLeftChild(new Node(element));
             //É necessario definir os pais dos nodes para que os mesmos não caiam na condição exclusiva do root no setTail
             this.tail.getLeftChild().setParent(this.tail);
@@ -94,6 +94,7 @@ public class Tree implements ITree {
         if (this.isEmpty()) {
             //exception
         }
+        Node next_tail;
         Node old_root = this.root;
         Integer left_child_value = Integer.parseInt(old_root.getLeftChild().toString());
         Integer right_child_value = Integer.parseInt(old_root.getRightChild().toString());
@@ -109,7 +110,11 @@ public class Tree implements ITree {
         //pelo último node
         double fractional_part = this.doubleHeight() % 1;
 
-        if (fractional_part == 0.0) {
+        //Verifica se o root e a tail são o mesmo elemento
+        if (this.root == this.tail) {
+
+        }
+        else if (fractional_part == 0.0) {
             //Como a árvore é perfeita, é necessario buscar a tail real, que ta na extrema direita
             this.reallocTail(this.root);
 
@@ -124,7 +129,7 @@ public class Tree implements ITree {
             this.tail.setLeftChild(this.root.getLeftChild());
             this.tail.setRightChild(this.root.getRightChild());
             //Salva a referência da proxima tail, será o pai do tail atual (não é a tail real, apenas a que irá receber novos nodes)
-            Node next_tail = this.tail.getParent();
+            next_tail = this.tail.getParent();
             //Remove a referência do pai do tail, assim ele efetivamente se tornara o root
             this.tail.setParent(null);
             //Remove as referencias do antigo root
@@ -134,10 +139,10 @@ public class Tree implements ITree {
             this.root = this.tail;
             this.tail = next_tail;
 
+            Integer root_value = Integer.parseInt(this.root.getKey().toString());
+
             //Verifica qual dos filhos do root é o menor
             if (left_child_value < right_child_value) {
-                Integer root_value = Integer.parseInt(this.root.getKey().toString());
-
                 //Agora verifica se o novo root é maior que o seu menor filho
                 if (root_value > left_child_value) {
                     downHeap(this.root, this.root.getLeftChild());
@@ -145,10 +150,21 @@ public class Tree implements ITree {
                     downHeap(this.root, this.root.getRightChild());
                 }
             } else {
-
+                if (root_value > right_child_value) {
+                    downHeap(this.root, this.root.getRightChild());
+                } else if (root_value > left_child_value) {
+                    downHeap(this.root, this.root.getLeftChild());
+                }
             }
         } else {
             //A tail real é um dos filhos da tail, verificar primeiro se o filho direito não é nulo, ser for a tail real é o filho esquerdo
+            if (this.tail.getRightChild() != null) {
+                next_tail = this.tail.getLeftChild();
+                this.tail = this.tail.getRightChild();
+            } else {
+//                next_tail = this.tail.getParent().;
+                this.tail = this.tail.getLeftChild();
+            }
 
             //Verifica qual dos filhos do root é o menor
             if (left_child_value > right_child_value) {
@@ -163,7 +179,30 @@ public class Tree implements ITree {
 
     @Override
     public void downHeap(Node node_down, Node node_up) {
+        //Salva temporariamente os filhos do node que vai descer na heap
+        Node downed_node_left_children = node_down.getLeftChild();
+        Node downed_node_right_children = node_down.getRightChild();
+        Node downed_node_parent = node_down.getParent();
 
+        //Altera os filhos e o pai do node que vai descer na heap
+        node_down.setLeftChild(node_up.getLeftChild());
+        node_down.setRightChild(node_up.getRightChild());
+        node_down.setParent(node_up);
+
+        //Altera os filhos e o pai do node que vai subir na heap
+        node_up.setParent(downed_node_parent);
+        if (downed_node_left_children == node_up) {
+            node_up.setLeftChild(node_down);
+            node_up.setRightChild(downed_node_right_children);
+        } else if (downed_node_right_children == node_up) {
+            node_up.setLeftChild(downed_node_left_children);
+            node_up.setRightChild(node_down);
+        }
+
+        //Verifica se o node que ta subindo vai ser root
+        if (downed_node_parent == null) {
+            this.root = node_up;
+        }
     }
 
     @Override
@@ -185,6 +224,7 @@ public class Tree implements ITree {
                 this.tail = this.tail.getLeftChild();
             }
         } else if (node.getParent().getRightChild() == node) { //Se a tail atual é um elemento da direita, buscar o proximo elemento da esquerda que esta vazio
+            System.out.println("node: " + node.getKey().toString());
             setTail(node.getParent());
         }
     }

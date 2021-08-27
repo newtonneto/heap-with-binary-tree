@@ -13,13 +13,17 @@ public class Main {
         heap.insert(25);
         heap.insert(30);
         heap.insert(1);
+        heap.insert(35);
+        heap.insert(40);
+        heap.insert(45);
+        heap.insert(51);
 
         heap.print(heap.min(), 10);
 
-        System.out.println(heap.getTail().toString());
-        heap.removeMin();
-        System.out.println(heap.getTail().toString());
+        System.out.println("tail: " + heap.getTail().toString());
+//        heap.removeMin();
+        System.out.println("tail: " + heap.getTail().toString());
 
-        heap.print(heap.min(), 10);
+//        heap.print(heap.min(), 10);
     }
 }
